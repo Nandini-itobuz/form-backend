@@ -1,13 +1,14 @@
 import express from "express";
-import { writeDetails, findDetails, getAllDetails, deleteDetail, updateDetail, 
+import { createDetails, findDetails, getAllDetails, deleteDetail, updateDetail, 
 	getApplicationsByPositions, deleteApplications } from "../controllers/applicationController";
+import { handleValidations } from "../middleWare/validation";
 
 export const applicationRoutes = express.Router();
 
-applicationRoutes.route('/create-application').post(writeDetails)
-applicationRoutes.route('/view-application/:id').get(findDetails)
-applicationRoutes.route('/view-applications/:page/:pageSize').get(getAllDetails)
-applicationRoutes.route('/delete-application/:id').delete(deleteDetail)
-applicationRoutes.route('/update-application/:id').put(updateDetail)
-applicationRoutes.route('/view-applications/:position').get(getApplicationsByPositions);
-applicationRoutes.route('/delete-all-applications').delete(deleteApplications)
+applicationRoutes.post('/create-application', handleValidations , createDetails)
+applicationRoutes.get('/view-application/:id' , findDetails)
+applicationRoutes.get('/view-applications/:page/:pageSize', getAllDetails)
+applicationRoutes.delete('/delete-application/:id', deleteDetail)
+applicationRoutes.put('/update-application/:id', handleValidations, updateDetail)
+applicationRoutes.get('/view-applications/:position',getApplicationsByPositions);
+applicationRoutes.delete('/delete-all-applications' , deleteApplications)

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import { JobApplication } from '../interfaces/jobApplication';
-import { Position } from '../interfaces/jobApplication';
+import { Position } from '../enums/jobPositionEnum';
 
 const jobApplicationSchema = new mongoose.Schema({
     firstName: { type: String, required: true },
