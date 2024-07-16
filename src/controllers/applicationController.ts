@@ -56,9 +56,12 @@ export async function getAllApplications(
     try {
         const page: number = Number(req.params.page)
         const pageSize: number = Number(req.params.pageSize)
-        const totalApplications =  await applicationModel.countDocuments({});
-        const applicationsPaginated = await applicationModel.find().skip((page - 1) * pageSize).limit(pageSize)
-        const totalPages = Math.ceil( totalApplications / pageSize)
+        const totalApplications = await applicationModel.countDocuments({})
+        const applicationsPaginated = await applicationModel
+            .find()
+            .skip((page - 1) * pageSize)
+            .limit(pageSize)
+        const totalPages = Math.ceil(totalApplications / pageSize)
         const applications = {
             applicationData: applicationsPaginated,
             totalPages,
@@ -138,14 +141,27 @@ export async function getApplicationsByPositions(
     next: NextFunction
 ): Promise<void> {
     try {
-        const applications = await applicationModel.find({
+        const page: number = Number(req.params.page)
+        const pageSize: number = Number(req.params.pageSize)
+        const totalApplications = await applicationModel.countDocuments({
             position: req.params.position,
         })
+        const applicationsPaginated = await applicationModel
+            .find({
+                position: req.params.position,
+            })
+            .skip((page - 1) * pageSize)
+            .limit(pageSize)
+        const totalPages = Math.ceil(totalApplications / pageSize)
         res.status(StatusCodes.SUCCESS).json({
-                  data: applications,
-                  success: true,
-                  message: 'Application found successfully',
-              })
+            data: {
+                edit: 'edit',
+                applicationData: applicationsPaginated,
+                totalPages,
+            },
+            success: true,
+            message: 'Application found successfully',
+        })
     } catch (err) {
         next(err)
     }

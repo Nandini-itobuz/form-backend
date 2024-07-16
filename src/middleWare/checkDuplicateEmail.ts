@@ -3,7 +3,11 @@ import { applicationModel } from '../schemas/applicationSchema'
 import { handleErrorResponse } from '../helper/handleErrorResponse'
 import { StatusCodes } from '../enums/statusCodes'
 
-export const checkEmailExists = async (req: Request, res: Response, next: NextFunction) => {
+export const checkEmailExists = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
     const findEmails = await applicationModel.find({ email: req.body.email })
     if (findEmails.length > 0) {
         handleErrorResponse({
@@ -13,5 +17,5 @@ export const checkEmailExists = async (req: Request, res: Response, next: NextFu
         })
         return
     }
-		next();
+    next()
 }

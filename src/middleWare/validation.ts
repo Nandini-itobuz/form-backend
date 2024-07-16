@@ -1,6 +1,5 @@
 import { handleErrorResponse } from '../helper/handleErrorResponse'
 import { NextFunction, Response, Request } from 'express'
-import { applicationModel } from '../schemas/applicationSchema'
 import { StatusCodes } from '../enums/statusCodes'
 
 export const handleValidations = async (
@@ -8,16 +7,28 @@ export const handleValidations = async (
     res: Response,
     next: NextFunction
 ) => {
+    const {
+        firstName,
+        lastName,
+        age,
+        email,
+        score,
+        institution,
+        degree,
+        yearsOfExperience,
+        position,
+    } = req.body
+
     if (
-        !req.body?.firstName ||
-        !req.body?.lastName ||
-        !req.body?.age ||
-        !req.body?.email ||
-        !req.body?.score ||
-        !req.body?.institution ||
-        !req.body?.degree ||
-        !req.body.yearsOfExperience ||
-        !req.body.position
+        !firstName ||
+        !lastName ||
+        age ||
+        email ||
+        score ||
+        institution ||
+        degree ||
+        yearsOfExperience ||
+        position
     ) {
         handleErrorResponse({
             res,

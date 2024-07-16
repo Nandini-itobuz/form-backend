@@ -2,7 +2,8 @@ import { Response } from 'express'
 
 export const handleErrorResponse = ({
     res,
-    code, message,
+    code,
+    message,
 }: {
     res: Response
     code: number
