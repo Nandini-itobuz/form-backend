@@ -1,14 +1,10 @@
-import { Request, Response, NextFunction } from 'express'
+import { Request, Response, NextFunction, RequestHandler } from 'express'
 import { applicationModel } from '../schemas/applicationSchema'
 import { StatusCodes } from '../enums/statusCodes'
 import mongoose from 'mongoose'
 import { handleErrorResponse } from '../helper/handleErrorResponse'
 
-export async function createApplication(
-    req: Request,
-    res: Response,
-    next: NextFunction
-): Promise<void> {
+export const createApplication: RequestHandler = async (req, res, next) => {
     try {
         const newApplication = await applicationModel.create(req.body)
         res.status(StatusCodes.CREATED).json({
@@ -21,38 +17,22 @@ export async function createApplication(
     }
 }
 
-export async function findApplication(
-    req: Request,
-    res: Response,
-    next: NextFunction
-): Promise<void> {
+export const findApplication: RequestHandler = async (req, res, next) => {
     try {
         const application = await applicationModel.findOne({
             _id: new mongoose.Types.ObjectId(req.params.id),
         })
-        if (!application) {
-            handleErrorResponse({
-                res,
-                code: StatusCodes.GATEWAY_TIMEOUT,
-                message: 'Application not found',
-            })
-        }
         res.status(StatusCodes.SUCCESS).json({
             application,
-            status: 200,
             success: true,
-            message: 'Application found successfully',
+            message: `${application} ? 'Application found successfully' : 'No applications found'`,
         })
     } catch (err) {
         next(err)
     }
 }
 
-export async function getAllApplications(
-    req: Request,
-    res: Response,
-    next: NextFunction
-): Promise<void> {
+export const getAllApplications: RequestHandler = async (req, res, next) => {
     try {
         const page: number = Number(req.params.page)
         const pageSize: number = Number(req.params.pageSize)
@@ -76,48 +56,27 @@ export async function getAllApplications(
     }
 }
 
-export async function deleteApplication(
-    req: Request,
-    res: Response,
-    next: NextFunction
-): Promise<void> {
+export const deleteApplication: RequestHandler = async (req, res, next) => {
     try {
         const applicationDetails = await applicationModel.findByIdAndDelete({
             _id: req.params.id,
         })
-        if (!applicationDetails) {
-            handleErrorResponse({
-                res,
-                code: StatusCodes.NOT_FOUND,
-                message: 'Unable to delete application!',
-            })
-        }
+
         res.status(StatusCodes.SUCCESS).json({
             data: applicationDetails,
             success: true,
-            message: 'Application deleted successfully',
+            message: `${applicationDetails} ? 'Application deleted successfully' : 'No applications found'`,
         })
     } catch (err) {
         next(err)
     }
 }
 
-export async function updateApplication(
-    req: Request,
-    res: Response,
-    next: NextFunction
-): Promise<void> {
+export const updateApplication: RequestHandler = async (req, res, next) => {
     try {
         const application = await applicationModel.findOne({
             _id: new mongoose.Types.ObjectId(req.params.id),
         })
-        if (!application) {
-            handleErrorResponse({
-                res,
-                code: StatusCodes.NOT_FOUND,
-                message: 'Unable to edit application',
-            })
-        }
         const applicationDetails = await applicationModel.findByIdAndUpdate(
             { _id: req.params.id },
             req.body,
@@ -128,18 +87,14 @@ export async function updateApplication(
         res.status(StatusCodes.SUCCESS).json({
             data: applicationDetails,
             success: true,
-            message: 'Application updated successfully',
+            message: `${application} ? 'Application edited successfully' : 'Unable to edit application'`,
         })
     } catch (err) {
         next(err)
     }
 }
 
-export async function getApplicationsByPositions(
-    req: Request,
-    res: Response,
-    next: NextFunction
-): Promise<void> {
+export const getApplicationsByPositions: RequestHandler = async ( req,res,next) => {
     try {
         const page: number = Number(req.params.page)
         const pageSize: number = Number(req.params.pageSize)
@@ -155,7 +110,6 @@ export async function getApplicationsByPositions(
         const totalPages = Math.ceil(totalApplications / pageSize)
         res.status(StatusCodes.SUCCESS).json({
             data: {
-                edit: 'edit',
                 applicationData: applicationsPaginated,
                 totalPages,
             },
@@ -167,11 +121,7 @@ export async function getApplicationsByPositions(
     }
 }
 
-export async function deleteAllApplications(
-    req: Request,
-    res: Response,
-    next: NextFunction
-): Promise<void> {
+export const deleteAllApplications: RequestHandler = async (req, res, next) => {
     try {
         const applications = await applicationModel.deleteMany({})
         applications.deletedCount

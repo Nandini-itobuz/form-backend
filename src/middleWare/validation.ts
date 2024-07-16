@@ -17,11 +17,13 @@ export const handleValidations = async (
         degree,
         yearsOfExperience,
         position,
+        phone
     } = req.body
     if (
         !firstName ||
         !lastName ||
         !age ||
+        !phone || 
         !email ||
         !score ||
         !institution ||
@@ -32,38 +34,38 @@ export const handleValidations = async (
         handleErrorResponse({
             res,
             code: StatusCodes.INTERNAL_SERVER_ERROR,
-            message: 'Enter requied feilds',
+            message: 'All fields are required',
         })
         return
     }
 
     const emailExpression: RegExp = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
-    const emailResult: boolean = emailExpression.test(String(req?.body?.email))
+    const emailResult: boolean = emailExpression.test(email)
     if (!emailResult) {
         handleErrorResponse({
             res,
             code: StatusCodes.BAD_REQUEST,
-            message: `Invalid email`,
+            message: 'Invalid Email Id',
         })
         return
     }
 
     const phoneExpression: RegExp = /^[6-9]\d{9}$/
-    const phoneResult: boolean = phoneExpression.test(String(req?.body?.phone))
+    const phoneResult: boolean = phoneExpression.test(phone)
     if (!phoneResult) {
         handleErrorResponse({
             res,
             code: StatusCodes.BAD_REQUEST,
-            message: `Invalid Phone`,
+            message: 'Invalid Phone Number',
         })
         return
     }
 
-    if (new Date(String(req?.body?.startDate)) > new Date()) {
+    if (new Date(String(req.body.startDate)) > new Date()) {
         handleErrorResponse({
             res,
             code: StatusCodes.BAD_REQUEST,
-            message: `Date cannot be future dates.`,
+            message: 'Date cannot be future dates.',
         })
         return
     }

@@ -4,7 +4,7 @@ import { Position } from '../enums/jobPositionEnum'
 
 const jobApplicationSchema = new mongoose.Schema({
     firstName: { type: String, required: true },
-    middleName: { type: String, required: false },
+    middleName: { type: String },
     lastName: { type: String, required: true },
     age: { type: Number, required: true },
     email: { type: String, required: true },
@@ -13,10 +13,10 @@ const jobApplicationSchema = new mongoose.Schema({
     yearsOfExperience: { type: Number, required: true },
     institution: { type: String, required: true },
     degree: { type: String },
-    fieldOfStudy: { type: String, required: false },
+    fieldOfStudy: { type: String },
     startDate: { type: Date },
     score: { type: Number, required: true },
-    status: { type: Boolean },
+    status: { type: Boolean , required : true},
 })
 
 export const applicationModel = mongoose.model<JobApplication>(
