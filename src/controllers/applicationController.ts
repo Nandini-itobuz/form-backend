@@ -25,7 +25,7 @@ export const findApplication: RequestHandler = async (req, res, next) => {
         res.status(StatusCodes.SUCCESS).json({
             application,
             success: true,
-            message: `${application} ? 'Application found successfully' : 'No applications found'`,
+            message: `${application ? 'Application found successfully' : 'No applications found'}`,
         })
     } catch (err) {
         next(err)
@@ -65,7 +65,7 @@ export const deleteApplication: RequestHandler = async (req, res, next) => {
         res.status(StatusCodes.SUCCESS).json({
             data: applicationDetails,
             success: true,
-            message: `${applicationDetails} ? 'Application deleted successfully' : 'No applications found'`,
+            message: `{${applicationDetails ? 'Application deleted successfully' : 'No applications found'}`,
         })
     } catch (err) {
         next(err)
@@ -87,14 +87,18 @@ export const updateApplication: RequestHandler = async (req, res, next) => {
         res.status(StatusCodes.SUCCESS).json({
             data: applicationDetails,
             success: true,
-            message: `${application} ? 'Application edited successfully' : 'Unable to edit application'`,
+            message: `${application ? 'Application edited successfully' : 'Unable to edit application'}`,
         })
     } catch (err) {
         next(err)
     }
 }
 
-export const getApplicationsByPositions: RequestHandler = async ( req,res,next) => {
+export const getApplicationsByPositions: RequestHandler = async (
+    req,
+    res,
+    next
+) => {
     try {
         const page: number = Number(req.params.page)
         const pageSize: number = Number(req.params.pageSize)

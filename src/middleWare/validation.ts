@@ -17,13 +17,13 @@ export const handleValidations = async (
         degree,
         yearsOfExperience,
         position,
-        phone
+        phone,
     } = req.body
     if (
         !firstName ||
         !lastName ||
         !age ||
-        !phone || 
+        !phone ||
         !email ||
         !score ||
         !institution ||

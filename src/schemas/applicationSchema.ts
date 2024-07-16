@@ -16,7 +16,7 @@ const jobApplicationSchema = new mongoose.Schema({
     fieldOfStudy: { type: String },
     startDate: { type: Date },
     score: { type: Number, required: true },
-    status: { type: Boolean , required : true},
+    status: { type: Boolean, required: true },
 })
 
 export const applicationModel = mongoose.model<JobApplication>(
