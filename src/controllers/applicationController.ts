@@ -1,8 +1,8 @@
-import { Request, Response, NextFunction, RequestHandler } from 'express'
+import { RequestHandler } from 'express'
 import { applicationModel } from '../schemas/applicationSchema'
 import { StatusCodes } from '../enums/statusCodes'
 import mongoose from 'mongoose'
-import { handleErrorResponse } from '../helper/handleErrorResponse'
+
 
 export const createApplication: RequestHandler = async (req, res, next) => {
     try {
@@ -41,10 +41,9 @@ export const getAllApplications: RequestHandler = async (req, res, next) => {
             .find()
             .skip((page - 1) * pageSize)
             .limit(pageSize)
-        const totalPages = Math.ceil(totalApplications / pageSize)
         const applications = {
             applicationData: applicationsPaginated,
-            totalPages,
+            totalPages: Math.ceil(totalApplications / pageSize)
         }
         res.status(StatusCodes.SUCCESS).json({
             data: applications,
@@ -74,9 +73,6 @@ export const deleteApplication: RequestHandler = async (req, res, next) => {
 
 export const updateApplication: RequestHandler = async (req, res, next) => {
     try {
-        const application = await applicationModel.findOne({
-            _id: new mongoose.Types.ObjectId(req.params.id),
-        })
         const applicationDetails = await applicationModel.findByIdAndUpdate(
             { _id: req.params.id },
             req.body,
@@ -87,7 +83,7 @@ export const updateApplication: RequestHandler = async (req, res, next) => {
         res.status(StatusCodes.SUCCESS).json({
             data: applicationDetails,
             success: true,
-            message: `${application ? 'Application edited successfully' : 'Unable to edit application'}`,
+            message: `${applicationDetails ? 'Application edited successfully' : 'Unable to edit application'}`,
         })
     } catch (err) {
         next(err)
@@ -111,14 +107,13 @@ export const getApplicationsByPositions: RequestHandler = async (
             })
             .skip((page - 1) * pageSize)
             .limit(pageSize)
-        const totalPages = Math.ceil(totalApplications / pageSize)
         res.status(StatusCodes.SUCCESS).json({
             data: {
                 applicationData: applicationsPaginated,
-                totalPages,
+                totalPages : Math.ceil(totalApplications / pageSize)
             },
             success: true,
-            message: 'Application found successfully',
+            message: 'Applications found successfully',
         })
     } catch (err) {
         next(err)
@@ -128,16 +123,11 @@ export const getApplicationsByPositions: RequestHandler = async (
 export const deleteAllApplications: RequestHandler = async (req, res, next) => {
     try {
         const applications = await applicationModel.deleteMany({})
-        applications.deletedCount
-            ? res.status(StatusCodes.SUCCESS).json({
+             res.status(StatusCodes.SUCCESS).json({
                   data: applications,
                   success: true,
-                  message: 'Applications deleted successfully',
-              })
-            : handleErrorResponse({
-                  res,
-                  code: StatusCodes.NO_CONTENT,
-                  message: `Nothing to delete`,
+                  message: `${applications ? 'Deleted all applications successfully' : 'No applications found'}`,
+
               })
     } catch (err) {
         next(err)

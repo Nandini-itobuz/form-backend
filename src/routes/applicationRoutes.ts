@@ -9,13 +9,11 @@ import {
     deleteAllApplications,
 } from '../controllers/applicationController'
 import { handleValidations } from '../middleWare/validation'
-import { checkEmailExists } from '../middleWare/checkDuplicateEmail'
 
 export const applicationRoutes = express.Router()
 
 applicationRoutes.post(
     '/create-application',
-    checkEmailExists,
     handleValidations,
     createApplication
 )

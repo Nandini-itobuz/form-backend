@@ -1,12 +1,9 @@
 import { handleErrorResponse } from '../helper/handleErrorResponse'
-import { NextFunction, Response, Request } from 'express'
+import { RequestHandler } from 'express'
 import { StatusCodes } from '../enums/statusCodes'
+import { applicationModel } from '../schemas/applicationSchema'
 
-export const handleValidations = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
+export const handleValidations: RequestHandler = async (req, res, next) => {
     const {
         firstName,
         lastName,
@@ -19,6 +16,7 @@ export const handleValidations = async (
         position,
         phone,
     } = req.body
+
     if (
         !firstName ||
         !lastName ||
@@ -47,6 +45,28 @@ export const handleValidations = async (
             code: StatusCodes.BAD_REQUEST,
             message: 'Invalid Email Id',
         })
+        return
+    }
+
+
+    const findEmails = await applicationModel.findOne({
+        email: req.body.email,
+    })
+    console.log(findEmails , req.params.id)
+    if (findEmails || !req.params.id) {
+        handleErrorResponse({
+            res,
+            code: StatusCodes.NOT_FOUND,
+            message: 'This is an existing email id',
+        })
+        return
+    } else {
+        if (findEmails?.email !== req.body.email)
+            handleErrorResponse({
+                res,
+                code: StatusCodes.NOT_FOUND,
+                message: 'This is an existing email id',
+            })
         return
     }
 
