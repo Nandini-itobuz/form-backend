@@ -1,10 +1,17 @@
-import { Response } from "express";
+import { Response } from 'express'
 
-export const handleErrorResponse = (res: Response, statusCode: number, message?: string) => {
-	res.status(statusCode).json({
-		data: null,
-		message,
-		success: false
-	});
-	return;
+export const handleErrorResponse = ({
+    res,
+    code, message,
+}: {
+    res: Response
+    code: number
+    message?: string
+}) => {
+    res.status(code).json({
+        data: null,
+        message,
+        success: false,
+    })
+    return
 }

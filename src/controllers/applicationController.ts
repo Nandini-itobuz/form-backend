@@ -1,83 +1,174 @@
-import { Request, Response, NextFunction } from "express";
-import { applicationModel } from "../schemas/applicationSchema";
-import { StatusCodes } from "../enums/statusCodes";
-import mongoose from "mongoose";
-import { handleErrorResponse } from "../helper/handleErrorResponse";
+import { Request, Response, NextFunction } from 'express'
+import { applicationModel } from '../schemas/applicationSchema'
+import { StatusCodes } from '../enums/statusCodes'
+import mongoose from 'mongoose'
+import { handleErrorResponse } from '../helper/handleErrorResponse'
 
-
-export async function createDetails(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function createApplication(
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> {
     try {
-        const newDetails = await applicationModel.create(req.body);
-        res.status(StatusCodes.CREATED).json({ data: newDetails, success: true, message: 'Data added successfully' });
+        const newApplication = await applicationModel.create(req.body)
+        res.status(StatusCodes.CREATED).json({
+            data: newApplication,
+            success: true,
+            message: 'Application added successfully',
+        })
     } catch (err) {
         next(err)
     }
 }
 
-export async function findDetails(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function findApplication(
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> {
     try {
-        const data = await applicationModel.findOne({ _id: new mongoose.Types.ObjectId(req.params.id) });
-        if (!data) { handleErrorResponse(res, StatusCodes.GATEWAT_TIMEOUT, `Data not found`) }
-        res.status(StatusCodes.SUCCESS).json({ data, status: 200, success: true, message: `Data found successfully` });
+        const application = await applicationModel.findOne({
+            _id: new mongoose.Types.ObjectId(req.params.id),
+        })
+        if (!application) {
+            handleErrorResponse({
+                res,
+                code: StatusCodes.GATEWAY_TIMEOUT,
+                message: 'Application not found',
+            })
+        }
+        res.status(StatusCodes.SUCCESS).json({
+            application,
+            status: 200,
+            success: true,
+            message: 'Application found successfully',
+        })
     } catch (err) {
         next(err)
     }
 }
 
-export async function getAllDetails(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function getAllApplications(
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> {
     try {
-        const userDetails = await applicationModel.find();
         const page: number = Number(req.params.page)
-        const pageSize: number = Number(req.params.pageSize);
-        const startIndex = (page - 1) * pageSize;
-        const endIndex = (page) * pageSize;
-        const paginatedData = userDetails.slice(startIndex, endIndex);
-        const totalPages = Math.ceil(userDetails.length / pageSize);
-        const applications = { applicationData: paginatedData, totalPages: totalPages }
-        res.status(StatusCodes.SUCCESS).json({ data: applications, success: true, message: `Data found successfully` });
+        const pageSize: number = Number(req.params.pageSize)
+        const totalApplications =  (await applicationModel.countDocuments({}).find()).length
+        const applicationsPaginated = await applicationModel.find().skip((page - 1) * pageSize).limit(pageSize)
+        const totalPages = Math.ceil( totalApplications / pageSize)
+        const applications = {
+            applicationData: applicationsPaginated,
+            totalPages,
+        }
+        res.status(StatusCodes.SUCCESS).json({
+            data: applications,
+            success: true,
+            message: 'Application found successfully',
+        })
     } catch (err) {
         next(err)
     }
 }
 
-export async function deleteDetail(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function deleteApplication(
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> {
     try {
-        const userDetails = await applicationModel.findByIdAndDelete({ _id: req.params.id });
-        if (!userDetails) { handleErrorResponse(res, StatusCodes.NOT_FOUND, `Unable to delete data!`) }
-        res.status(StatusCodes.SUCCESS).json({ data: userDetails, success: true, message: `Data deleted successfully` });
+        const applicationDetails = await applicationModel.findByIdAndDelete({
+            _id: req.params.id,
+        })
+        if (!applicationDetails) {
+            handleErrorResponse({
+                res,
+                code: StatusCodes.NOT_FOUND,
+                message: 'Unable to delete application!',
+            })
+        }
+        res.status(StatusCodes.SUCCESS).json({
+            data: applicationDetails,
+            success: true,
+            message: 'Application deleted successfully',
+        })
     } catch (err) {
         next(err)
     }
 }
 
-export async function updateDetail(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function updateApplication(
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> {
     try {
-        const data = await applicationModel.findOne({ _id: new mongoose.Types.ObjectId(req.params.id) });
-        if (!data) { handleErrorResponse(res, StatusCodes.NOT_FOUND, `Unable to edit data`) }
-        const userDetails = await applicationModel.findByIdAndUpdate({ _id: req.params.id }, req.body, {
-            returnOriginal: false
-        });
-        res.status(StatusCodes.SUCCESS).json({ data: userDetails, success: true, message: `Data updated successfully` });
+        const application = await applicationModel.findOne({
+            _id: new mongoose.Types.ObjectId(req.params.id),
+        })
+        if (!application) {
+            handleErrorResponse({
+                res,
+                code: StatusCodes.NOT_FOUND,
+                message: 'Unable to edit application',
+            })
+        }
+        const userDetails = await applicationModel.findByIdAndUpdate(
+            { _id: req.params.id },
+            req.body,
+            {
+                returnOriginal: false,
+            }
+        )
+        res.status(StatusCodes.SUCCESS).json({
+            data: userDetails,
+            success: true,
+            message: 'Application updated successfully',
+        })
     } catch (err) {
         next(err)
     }
 }
 
-export async function getApplicationsByPositions(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function getApplicationsByPositions(
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> {
     try {
-        const applications = await applicationModel.find({ position: req.params.position })
-        res.status(200).json({ data: applications, status: 200, success: true });
+        const applications = await applicationModel.find({
+            position: req.params.position,
+        })
+        res.status(StatusCodes.SUCCESS).json({
+                  data: applications,
+                  success: true,
+                  message: 'Application found successfully',
+              })
     } catch (err) {
         next(err)
     }
 }
 
-export async function deleteApplications(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function deleteAllApplications(
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> {
     try {
-        const applications = await applicationModel.deleteMany({});
-         applications.deletedCount ? 
-        res.status(200).json({ data: applications, status: 200, success: true }) :
-        handleErrorResponse(res, StatusCodes.NO_CONTENT, `Nothing to delete`)
+        const applications = await applicationModel.deleteMany({})
+        applications.deletedCount
+            ? res.status(StatusCodes.SUCCESS).json({
+                  data: applications,
+                  success: true,
+                  message: 'Applications deleted successfully',
+              })
+            : handleErrorResponse({
+                  res,
+                  code: StatusCodes.NO_CONTENT,
+                  message: `Nothing to delete`,
+              })
     } catch (err) {
         next(err)
     }
