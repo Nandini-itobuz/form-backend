@@ -18,17 +18,16 @@ export const handleValidations = async (
         yearsOfExperience,
         position,
     } = req.body
-
     if (
         !firstName ||
         !lastName ||
-        age ||
-        email ||
-        score ||
-        institution ||
-        degree ||
-        yearsOfExperience ||
-        position
+        !age ||
+        !email ||
+        !score ||
+        !institution ||
+        !degree ||
+        !yearsOfExperience ||
+        !position
     ) {
         handleErrorResponse({
             res,
