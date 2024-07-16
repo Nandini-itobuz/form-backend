@@ -38,16 +38,6 @@ export const handleValidations = async (
         return
     }
 
-    const findEmails = await applicationModel.find({ email: req.body.email })
-    if (findEmails.length > 0) {
-        handleErrorResponse({
-            res,
-            code: StatusCodes.NOT_FOUND,
-            message: `Form doesn't exists`,
-        })
-        return
-    }
-
     const phoneExpression: RegExp = /^[6-9]\d{9}$/
     const phoneResult: boolean = phoneExpression.test(String(req?.body?.phone))
     if (!phoneResult) {

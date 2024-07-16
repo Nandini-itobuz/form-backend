@@ -56,7 +56,7 @@ export async function getAllApplications(
     try {
         const page: number = Number(req.params.page)
         const pageSize: number = Number(req.params.pageSize)
-        const totalApplications =  (await applicationModel.countDocuments({}).find()).length
+        const totalApplications =  await applicationModel.countDocuments({});
         const applicationsPaginated = await applicationModel.find().skip((page - 1) * pageSize).limit(pageSize)
         const totalPages = Math.ceil( totalApplications / pageSize)
         const applications = {
@@ -115,7 +115,7 @@ export async function updateApplication(
                 message: 'Unable to edit application',
             })
         }
-        const userDetails = await applicationModel.findByIdAndUpdate(
+        const applicationDetails = await applicationModel.findByIdAndUpdate(
             { _id: req.params.id },
             req.body,
             {
@@ -123,7 +123,7 @@ export async function updateApplication(
             }
         )
         res.status(StatusCodes.SUCCESS).json({
-            data: userDetails,
+            data: applicationDetails,
             success: true,
             message: 'Application updated successfully',
         })
