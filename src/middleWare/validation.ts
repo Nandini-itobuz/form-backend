@@ -51,10 +51,10 @@ export const handleValidations: RequestHandler = async (req, res, next) => {
     const findEmails = await applicationModel.findOne({
         email: req.body.email,
     })
-
+    
     if (
         (!req.params.id && findEmails) ||
-        (findEmails && findEmails?.email != req.params.email)
+        (findEmails && ((findEmails?.email != req.body.email) || (findEmails?.email === req.body.email && findEmails._id.toString() != req.params.id)) )
     ) {
         handleErrorResponse({
             res,
@@ -63,6 +63,7 @@ export const handleValidations: RequestHandler = async (req, res, next) => {
         })
         return
     }
+
 
     const phoneExpression: RegExp = /^[6-9]\d{9}$/
     const phoneResult: boolean = phoneExpression.test(phone)
