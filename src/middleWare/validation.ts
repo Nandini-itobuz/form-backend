@@ -64,7 +64,6 @@ export const handleValidations: RequestHandler = async (req, res, next) => {
         return
     }
 
-
     const phoneExpression: RegExp = /^[6-9]\d{9}$/
     const phoneResult: boolean = phoneExpression.test(phone)
     if (!phoneResult) {
