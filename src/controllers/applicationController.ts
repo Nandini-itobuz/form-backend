@@ -3,7 +3,6 @@ import { applicationModel } from '../schemas/applicationSchema'
 import { StatusCodes } from '../enums/statusCodes'
 import mongoose from 'mongoose'
 
-
 export const createApplication: RequestHandler = async (req, res, next) => {
     try {
         const newApplication = await applicationModel.create(req.body)
@@ -43,7 +42,7 @@ export const getAllApplications: RequestHandler = async (req, res, next) => {
             .limit(pageSize)
         const applications = {
             applicationData: applicationsPaginated,
-            totalPages: Math.ceil(totalApplications / pageSize)
+            totalPages: Math.ceil(totalApplications / pageSize),
         }
         res.status(StatusCodes.SUCCESS).json({
             data: applications,
@@ -110,7 +109,7 @@ export const getApplicationsByPositions: RequestHandler = async (
         res.status(StatusCodes.SUCCESS).json({
             data: {
                 applicationData: applicationsPaginated,
-                totalPages : Math.ceil(totalApplications / pageSize)
+                totalPages: Math.ceil(totalApplications / pageSize),
             },
             success: true,
             message: 'Applications found successfully',
@@ -123,12 +122,11 @@ export const getApplicationsByPositions: RequestHandler = async (
 export const deleteAllApplications: RequestHandler = async (req, res, next) => {
     try {
         const applications = await applicationModel.deleteMany({})
-             res.status(StatusCodes.SUCCESS).json({
-                  data: applications,
-                  success: true,
-                  message: `${applications ? 'Deleted all applications successfully' : 'No applications found'}`,
-
-              })
+        res.status(StatusCodes.SUCCESS).json({
+            data: applications,
+            success: true,
+            message: `${applications ? 'Deleted all applications successfully' : 'No applications found'}`,
+        })
     } catch (err) {
         next(err)
     }
