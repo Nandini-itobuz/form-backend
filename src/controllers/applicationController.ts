@@ -59,11 +59,10 @@ export const deleteApplication: RequestHandler = async (req, res, next) => {
         const applicationDetails = await applicationModel.findByIdAndDelete({
             _id: req.params.id,
         })
-
         res.status(StatusCodes.SUCCESS).json({
             data: applicationDetails,
             success: true,
-            message: `{${applicationDetails ? 'Application deleted successfully' : 'No applications found'}`,
+            message: `${applicationDetails ? 'Application deleted successfully' : 'No applications found'}`,
         })
     } catch (err) {
         next(err)

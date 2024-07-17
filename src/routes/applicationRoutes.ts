@@ -10,6 +10,7 @@ import {
 } from '../controllers/applicationController'
 import { handleValidations } from '../middleWare/validation'
 
+
 export const applicationRoutes = express.Router()
 
 applicationRoutes.post(

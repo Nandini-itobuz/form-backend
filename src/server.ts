@@ -1,6 +1,7 @@
 import express, { Express } from 'express'
 import { dbConnection } from './config/dbConnection'
 import { applicationRoutes } from './routes/applicationRoutes'
+import errorHandler from './middleWare/error'
 import cors from 'cors'
 import dotenv from 'dotenv'
 
@@ -14,6 +15,7 @@ const port = process.env.PORT || 3006
 dbConnection()
 
 app.use('/', applicationRoutes)
+app.use(errorHandler)
 
 app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`)

@@ -37,7 +37,7 @@ export const handleValidations: RequestHandler = async (req, res, next) => {
         return
     }
 
-    const emailExpression: RegExp = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,8}$/
+    const emailExpression: RegExp = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/
     const emailResult: boolean = emailExpression.test(email)
     if (!emailResult) {
         handleErrorResponse({
@@ -52,28 +52,16 @@ export const handleValidations: RequestHandler = async (req, res, next) => {
         email: req.body.email,
     })
 
-    if (!req.params.id && findEmails) {
+    if (
+        (!req.params.id && findEmails) ||
+        (findEmails && findEmails?.email != req.params.email)
+    ) {
         handleErrorResponse({
             res,
             code: StatusCodes.CONFLICT,
             message: 'This is an existing email id',
         })
         return
-    }
-
-    if (req.params.id) {
-        const findEmail = await applicationModel.find({
-            email: req.body.email,
-        })
-
-        if (findEmail.length >= 1 && !findEmails?._id.equals(req.params.id)) {
-            handleErrorResponse({
-                res,
-                code: StatusCodes.CONFLICT,
-                message: 'This is an existing email id',
-            })
-            return
-        }
     }
 
     const phoneExpression: RegExp = /^[6-9]\d{9}$/
