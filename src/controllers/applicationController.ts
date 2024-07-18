@@ -5,16 +5,16 @@ import mongoose from 'mongoose'
 
 export const createApplication: RequestHandler = async (req, res, next) => {
     try {
-        const id =  req.params.id
-        console.log(id)
-        const newApplication = await applicationModel.findByIdAndUpdate({ _id: id },
+        const id = req.body._id ? req.body._id : new mongoose.Types.ObjectId()
+        const newApplication = await applicationModel.findByIdAndUpdate(
+            { _id: id },
             req.body,
-            { new :true ,
-              upsert: true});
+            { new: true, upsert: true }
+        )
         res.status(StatusCodes.CREATED).json({
             data: newApplication,
             success: true,
-            message: `${newApplication ? 'Application edited successfully' : 'Unable to edit application'}`
+            message: `${newApplication ? 'Application edited successfully' : 'Unable to edit application'}`,
         })
     } catch (err) {
         next(err)
@@ -73,25 +73,6 @@ export const deleteApplication: RequestHandler = async (req, res, next) => {
         next(err)
     }
 }
-
-// export const updateApplication: RequestHandler = async (req, res, next) => {
-//     try {
-//         const applicationDetails = await applicationModel.findByIdAndUpdate(
-//             { _id: req.params.id },
-//             req.body,
-//             {
-//                 returnOriginal: false,
-//             }
-//         )
-//         res.status(StatusCodes.SUCCESS).json({
-//             data: applicationDetails,
-//             success: true,
-//             message: `${applicationDetails ? 'Application edited successfully' : 'Unable to edit application'}`,
-//         })
-//     } catch (err) {
-//         next(err)
-//     }
-// }
 
 export const getApplicationsByPositions: RequestHandler = async (
     req,

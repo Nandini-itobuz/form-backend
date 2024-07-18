@@ -59,7 +59,7 @@ export const handleValidations: RequestHandler = async (req, res, next) => {
         handleErrorResponse({
             res,
             code: StatusCodes.CONFLICT,
-            message: 'This is an existing email id',
+            message: 'This is an existing email id!',
         })
         return
     }
