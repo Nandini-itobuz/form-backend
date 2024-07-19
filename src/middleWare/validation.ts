@@ -51,10 +51,13 @@ export const handleValidations: RequestHandler = async (req, res, next) => {
     const findEmails = await applicationModel.findOne({
         email: req.body.email,
     })
-    
+
     if (
         (!req.params.id && findEmails) ||
-        (findEmails && ((findEmails?.email != req.body.email) || (findEmails?.email === req.body.email && findEmails._id.toString() != req.params.id)) )
+        (findEmails &&
+            (findEmails?.email != req.body.email ||
+                (findEmails?.email === req.body.email &&
+                    findEmails._id.toString() != req.params.id)))
     ) {
         handleErrorResponse({
             res,

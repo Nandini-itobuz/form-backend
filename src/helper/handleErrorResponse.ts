@@ -14,5 +14,5 @@ export const handleErrorResponse = ({
         message,
         success: false,
     })
-    return;
+    return
 }

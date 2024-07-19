@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express'
 import { applicationModel } from '../schemas/applicationSchema'
 import { StatusCodes } from '../enums/statusCodes'
-import mongoose from 'mongoose'
+import mongoose, { mongo } from 'mongoose'
 
 export const createApplication: RequestHandler = async (req, res, next) => {
     try {
@@ -61,9 +61,13 @@ export const getAllApplications: RequestHandler = async (req, res, next) => {
 
 export const deleteApplication: RequestHandler = async (req, res, next) => {
     try {
-        const applicationDetails = await applicationModel.findByIdAndDelete({
-            _id: req.params.id,
-        })
+        const id = req.body.id ?? null
+        console.log(id)
+        const applicationDetails = id
+            ? await applicationModel.findByIdAndDelete({
+                  _id: id,
+              })
+            : await applicationModel.deleteMany({})
         res.status(StatusCodes.SUCCESS).json({
             data: applicationDetails,
             success: true,
@@ -98,19 +102,6 @@ export const getApplicationsByPositions: RequestHandler = async (
             },
             success: true,
             message: 'Applications found successfully',
-        })
-    } catch (err) {
-        next(err)
-    }
-}
-
-export const deleteAllApplications: RequestHandler = async (req, res, next) => {
-    try {
-        const applications = await applicationModel.deleteMany({})
-        res.status(StatusCodes.SUCCESS).json({
-            data: applications,
-            success: true,
-            message: `${applications ? 'Deleted all applications successfully' : 'No applications found'}`,
         })
     } catch (err) {
         next(err)

@@ -13,8 +13,6 @@ const errorHandler = (
     res: Response,
     next: NextFunction
 ) => {
-
-
     if (mongoose.Error.ValidationError) {
         return handleErrorResponse({
             res,
@@ -32,10 +30,10 @@ const errorHandler = (
     }
 
     return handleErrorResponse({
-			res,
-			code: StatusCodes.INTERNAL_SERVER_ERROR,
-			message: `${err.message} :Internal Server Error`,
-	})
+        res,
+        code: StatusCodes.INTERNAL_SERVER_ERROR,
+        message: `${err.message} :Internal Server Error`,
+    })
 }
 
 export default errorHandler
