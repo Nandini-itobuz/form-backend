@@ -2,6 +2,7 @@ import { RequestHandler } from 'express'
 import { applicationModel } from '../schemas/applicationSchema'
 import { StatusCodes } from '../enums/statusCodes'
 import mongoose, { mongo } from 'mongoose'
+import { Position } from '../enums/jobPositionEnum'
 
 class applicationClass {
     public createApplication: RequestHandler = async (req, res, next) => {
@@ -64,13 +65,12 @@ class applicationClass {
 
     public deleteApplication: RequestHandler = async (req, res, next) => {
         try {
-            const id = req.body.id ?? null
-            const filter = id ? { _id: id } : {}
+            const filter = req.body.id ? { _id: req.body.id } : {}
             const applicationDetails = await applicationModel.deleteMany(filter)
             res.status(StatusCodes.SUCCESS).json({
                 data: applicationDetails,
                 success: true,
-                message: `${id ? 'Application deleted successfully' : 'All applications deleted successfully'}`,
+                message: `${req.body.id ? 'Application deleted successfully' : 'All applications deleted successfully'}`,
             })
         } catch (err) {
             next(err)
@@ -85,13 +85,10 @@ class applicationClass {
         try {
             const page: number = Number(req.params.page)
             const pageSize: number = Number(req.params.pageSize)
-            const totalApplications = await applicationModel.countDocuments({
-                position: req.params.position,
-            })
+            const filter = req.params.position != Position.ALL ? { position: req.params.position } : {}
+            const totalApplications = await applicationModel.countDocuments(filter)
             const applicationsPaginated = await applicationModel
-                .find({
-                    position: req.params.position,
-                })
+                .find(filter)
                 .skip((page - 1) * pageSize)
                 .limit(pageSize)
             res.status(StatusCodes.SUCCESS).json({
