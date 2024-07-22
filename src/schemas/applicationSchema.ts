@@ -13,7 +13,6 @@ const jobApplicationSchema = new mongoose.Schema({
     yearsOfExperience: { type: Number, required: true },
     institution: { type: String, required: true },
     degree: { type: String },
-    fieldOfStudy: { type: String },
     startDate: { type: Date },
     score: { type: Number, required: true },
     status: { type: Boolean, required: true },

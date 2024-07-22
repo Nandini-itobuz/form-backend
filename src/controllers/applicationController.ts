@@ -9,7 +9,7 @@ class applicationClass {
         try {
             const id = req.body._id
                 ? req.body._id
-                : new mongoose.Types.ObjectId()
+                : new mongoose.Types.ObjectId();
             const newApplication = await applicationModel.findByIdAndUpdate(
                 { _id: id },
                 req.body,
@@ -85,8 +85,12 @@ class applicationClass {
         try {
             const page: number = Number(req.params.page)
             const pageSize: number = Number(req.params.pageSize)
-            const filter = req.params.position != Position.ALL ? { position: req.params.position } : {}
-            const totalApplications = await applicationModel.countDocuments(filter)
+            const filter =
+                req.params.position != Position.ALL
+                    ? { position: req.params.position }
+                    : {}
+            const totalApplications =
+                await applicationModel.countDocuments(filter)
             const applicationsPaginated = await applicationModel
                 .find(filter)
                 .skip((page - 1) * pageSize)
