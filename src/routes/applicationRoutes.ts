@@ -1,11 +1,5 @@
 import express from 'express'
-import {
-    createApplication,
-    findApplication,
-    getAllApplications,
-    deleteApplication,
-    getApplicationsByPositions,
-} from '../controllers/applicationController'
+import { applicationService } from '../controllers/applicationController'
 import { handleValidations } from '../middleWare/validation'
 
 export const applicationRoutes = express.Router()
@@ -13,12 +7,21 @@ export const applicationRoutes = express.Router()
 applicationRoutes.post(
     '/create-application/:id',
     handleValidations,
-    createApplication
+    applicationService.createApplication
 )
-applicationRoutes.get('/view-application/:id', findApplication)
-applicationRoutes.get('/view-applications/:page/:pageSize', getAllApplications)
-applicationRoutes.post('/delete-application', deleteApplication)
+applicationRoutes.get(
+    '/view-application/:id',
+    applicationService.findApplication
+)
+applicationRoutes.get(
+    '/view-applications/:page/:pageSize',
+    applicationService.getAllApplications
+)
+applicationRoutes.post(
+    '/delete-application',
+    applicationService.deleteApplication
+)
 applicationRoutes.get(
     '/view-applications/:position/:page/:pageSize',
-    getApplicationsByPositions
+    applicationService.getApplicationsByPositions
 )
