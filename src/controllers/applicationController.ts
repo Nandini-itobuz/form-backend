@@ -107,6 +107,24 @@ class applicationClass {
             next(err)
         }
     }
+
+    public handleSeachItems : RequestHandler = async(req, res, next) => {
+        try{
+            const filter =
+            req.params.position != Position.ALL
+                ? { position: req.params.position }
+                : {}
+            const firstNameValues = await applicationModel.find(filter);
+            const filteredItems = firstNameValues.filter((item) => {return item.firstName.toLowerCase().includes(req.body.name)})
+            res.status(StatusCodes.SUCCESS).json({
+                success: true,
+                message:'Applications successfully found',
+                data:{applications : filteredItems},
+            })
+        }catch(e){
+            next(e)
+        }
+    }
 }
 
 export const applicationService = new applicationClass()

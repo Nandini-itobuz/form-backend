@@ -25,3 +25,7 @@ applicationRoutes.get(
     '/view-applications/:position/:page/:pageSize',
     applicationService.getApplicationsByPositions
 )
+applicationRoutes.post(
+    '/search-applications/:position',
+    applicationService.handleSeachItems
+)
