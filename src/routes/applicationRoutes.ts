@@ -13,10 +13,6 @@ applicationRoutes.get(
     '/view-application/:id',
     applicationService.findApplication
 )
-applicationRoutes.get(
-    '/view-applications/:page/:pageSize',
-    applicationService.getAllApplications
-)
 applicationRoutes.post(
     '/delete-application',
     applicationService.deleteApplication

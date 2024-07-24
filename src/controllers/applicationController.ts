@@ -7,9 +7,7 @@ import { Position } from '../enums/jobPositionEnum'
 class applicationClass {
     public createApplication: RequestHandler = async (req, res, next) => {
         try {
-            const id = req.body._id
-                ? req.body._id
-                : new mongoose.Types.ObjectId();
+            const id = req.body._id ?? new mongoose.Types.ObjectId();
             const newApplication = await applicationModel.findByIdAndUpdate(
                 { _id: id },
                 req.body,
@@ -31,32 +29,9 @@ class applicationClass {
                 _id: new mongoose.Types.ObjectId(req.params.id),
             })
             res.status(StatusCodes.SUCCESS).json({
-                application,
+                data:application,
                 success: true,
                 message: `${application ? 'Application found successfully' : 'No applications found'}`,
-            })
-        } catch (err) {
-            next(err)
-        }
-    }
-
-    public getAllApplications: RequestHandler = async (req, res, next) => {
-        try {
-            const page: number = Number(req.params.page)
-            const pageSize: number = Number(req.params.pageSize)
-            const totalApplications = await applicationModel.countDocuments({})
-            const applicationsPaginated = await applicationModel
-                .find()
-                .skip((page - 1) * pageSize)
-                .limit(pageSize)
-            const applications = {
-                applicationData: applicationsPaginated,
-                totalPages: Math.ceil(totalApplications / pageSize),
-            }
-            res.status(StatusCodes.SUCCESS).json({
-                data: applications,
-                success: true,
-                message: 'Application found successfully',
             })
         } catch (err) {
             next(err)
