@@ -4,7 +4,7 @@ const applicationYupSchema = yup.object().shape({
   firstName: yup
     .string()
     .required("Please enter first name")
-    .min(4, { message: "Min 4 letters required" }),
+    .min(4, "Min 4 letters required" ),
   middleName: yup.string().optional(),
   lastName: yup
     .string()

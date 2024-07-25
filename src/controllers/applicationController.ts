@@ -7,7 +7,7 @@ import { Position } from '../enums/jobPositionEnum'
 class applicationClass {
     public createApplication: RequestHandler = async (req, res, next) => {
         try {
-            const id = req.body._id ?? new mongoose.Types.ObjectId();
+            const id = req.body._id ?? new mongoose.Types.ObjectId()
             const newApplication = await applicationModel.findByIdAndUpdate(
                 { _id: id },
                 req.body,
@@ -29,7 +29,7 @@ class applicationClass {
                 _id: new mongoose.Types.ObjectId(req.params.id),
             })
             res.status(StatusCodes.SUCCESS).json({
-                data:application,
+                data: application,
                 success: true,
                 message: `${application ? 'Application found successfully' : 'No applications found'}`,
             })
@@ -83,20 +83,26 @@ class applicationClass {
         }
     }
 
-    public handleSeachItems : RequestHandler = async(req, res, next) => {
-        try{
+    public handleSeachItems: RequestHandler = async (req, res, next) => {
+        try {
             const filter =
-            req.params.position != Position.ALL
-                ? { position: req.params.position }
-                : {}
-            const firstNameValues = await applicationModel.find(filter);
-            const filteredItems = firstNameValues.filter((item) => {return item.firstName.toLowerCase().includes(req.body.name)})
+                req.params.position != Position.ALL
+                    ? { position: req.params.position }
+                    : {}
+            const firstNameValues = await applicationModel.find(filter)
+            const filteredItems = firstNameValues.filter((item) => {
+                return (
+                    item.firstName.toLowerCase().includes(req.body.name) ||
+                    item.lastName.toLocaleLowerCase().includes(req.body.name) ||
+                    item.position.toLocaleLowerCase().includes(req.body.name)
+                )
+            })
             res.status(StatusCodes.SUCCESS).json({
                 success: true,
-                message:'Applications successfully found',
-                data:{applications : filteredItems},
+                message: 'Applications successfully found',
+                data: { applications: filteredItems },
             })
-        }catch(e){
+        } catch (e) {
             next(e)
         }
     }
