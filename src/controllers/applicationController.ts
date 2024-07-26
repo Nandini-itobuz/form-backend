@@ -92,9 +92,15 @@ class applicationClass {
             const firstNameValues = await applicationModel.find(filter)
             const filteredItems = firstNameValues.filter((item) => {
                 return (
-                    item.firstName.toLowerCase().includes(req.body.name) ||
-                    item.lastName.toLocaleLowerCase().includes(req.body.name) ||
-                    item.position.toLocaleLowerCase().includes(req.body.name)
+                    item.firstName
+                        .toLowerCase()
+                        .includes(req.body.name.toLocaleLowerCase()) ||
+                    item.lastName
+                        .toLocaleLowerCase()
+                        .includes(req.body.name.toLocaleLowerCase()) ||
+                    item.position
+                        .toLocaleLowerCase()
+                        .includes(req.body.name.toLocaleLowerCase())
                 )
             })
             res.status(StatusCodes.SUCCESS).json({

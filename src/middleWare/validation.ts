@@ -22,7 +22,7 @@ export const handleValidations: RequestHandler = async (req, res, next) => {
                 code: StatusCodes.CONFLICT,
                 message: 'This is an existing email id!',
             })
-            return 
+            return
         }
         next()
     } catch (e: any) {
