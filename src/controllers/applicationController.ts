@@ -15,7 +15,7 @@ class applicationClass {
             )
             res.status(StatusCodes.CREATED).json({
                 data: newApplication,
-                success: true,
+                status: true,
                 message: `${newApplication ? 'Application edited successfully' : 'Unable to edit application'}`,
             })
         } catch (err) {
@@ -30,7 +30,7 @@ class applicationClass {
             })
             res.status(StatusCodes.SUCCESS).json({
                 data: application,
-                success: true,
+                status: true,
                 message: `${application ? 'Application found successfully' : 'No applications found'}`,
             })
         } catch (err) {
@@ -44,7 +44,7 @@ class applicationClass {
             const applicationDetails = await applicationModel.deleteMany(filter)
             res.status(StatusCodes.SUCCESS).json({
                 data: applicationDetails,
-                success: true,
+                status: true,
                 message: `${req.body.id ? 'Application deleted successfully' : 'All applications deleted successfully'}`,
             })
         } catch (err) {
@@ -75,7 +75,7 @@ class applicationClass {
                     applicationData: applicationsPaginated,
                     totalPages: Math.ceil(totalApplications / pageSize),
                 },
-                success: true,
+                status: true,
                 message: 'Applications found successfully',
             })
         } catch (err) {
@@ -89,22 +89,16 @@ class applicationClass {
                 req.params.position != Position.ALL
                     ? { position: req.params.position }
                     : {}
-            const firstNameValues = await applicationModel.find(filter)
-            const filteredItems = firstNameValues.filter((item) => {
-                return (
-                    item.firstName
-                        .toLowerCase()
-                        .includes(req.body.name.toLocaleLowerCase()) ||
-                    item.lastName
-                        .toLocaleLowerCase()
-                        .includes(req.body.name.toLocaleLowerCase()) ||
-                    item.position
-                        .toLocaleLowerCase()
-                        .includes(req.body.name.toLocaleLowerCase())
-                )
+            const filteredItems = await applicationModel.find({
+                ...filter,
+                $or: [
+                    { firstName: { $regex: req.body.name, $options: 'i' } },
+                    { lastName: { $regex: req.body.name, $options: 'i' } },
+                    { position: { $regex: req.body.name, $options: 'i' } },
+                ],
             })
             res.status(StatusCodes.SUCCESS).json({
-                success: true,
+                status: true,
                 message: 'Applications successfully found',
                 data: { applications: filteredItems },
             })
